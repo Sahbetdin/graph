@@ -27,14 +27,14 @@ int		queue_insert(t_queue *Q, int x);
 void	queue_print(t_queue *Q);
 int		queue_out_first(t_queue *Q);
 int		queue_shine_first(t_queue *Q);
-
+void	free_queue(t_queue *Q);
 
 void	initiate_arr(int *adj, int *next, int v)
 {
 	int i;
 
 	i = 0;
-	while (i < v + 1)
+	while (i < v)
 	{
 		adj[i] = 0;
 		next[i] = 0;
@@ -159,12 +159,13 @@ int main(int argc, char **argv)
 	int *next;
 	int m;
 	int start;
+	char flag_start;
 
 	if (argc == 1)
 		return (0);
 	if ((fd = open(argv[1], O_RDONLY)) < 1)
 		return (0);
-
+	flag_start = 0;
 	get_next_line(fd, &line);
 	tmp = line;
 	tmp = ft_atoi_backsp(tmp, &vv, &nn);
@@ -173,14 +174,17 @@ int main(int argc, char **argv)
 
 	n = vv + 2 * ee;
 	printf("n = %d\n", n);
-
 	adj = (int *)malloc(sizeof(int) * n + 1);
 	next = (int *)malloc(sizeof(int) * n + 1);
-	initiate_arr(adj, next, n);
+	initiate_arr(adj, next, n + 1);
+	free(adj);
+	free(next);
+	
 	// print_adj_next(adj, next, n);
 
 	printf("vv = %d\n", vv);
 	printf("ee = %d\n", ee);
+
 
 	i = vv + 1;
 	m = 1;
@@ -192,6 +196,7 @@ int main(int argc, char **argv)
 			free(line);
 			get_next_line(fd, &line);
 			start = ft_atoi(line);
+			flag_start = 1;
 			printf("START point = %d\n", start);
 			free(line);
 			if (start > vv) //think about checking starting point (eg, uninitialized)
@@ -213,6 +218,12 @@ int main(int argc, char **argv)
 		printf("u = %d, v = %d\n", u, v);
 		// getchar();
 	}
+	if (flag_start == 0)
+	{
+		free(adj);
+		free(next);
+		return (0);
+	}
 	print_adj_next(adj, next, n);
 
 	t_stack *head;
@@ -233,6 +244,9 @@ int main(int argc, char **argv)
 	bfs(adj, next, &q);
 	queue_print(&q);
 
+	// free_queue(&q);
+	free(adj);
+	free(next);
 	return (0);
 }
 

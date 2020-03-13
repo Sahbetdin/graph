@@ -133,6 +133,11 @@ int		queue_shine_first(t_queue *Q)
 		return (-1);
 }
 
+void	free_queue(t_queue *Q)
+{
+	free(Q->front);
+}
+
 // int main()
 // {
 // 	t_queue q;
