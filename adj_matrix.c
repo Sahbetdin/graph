@@ -33,8 +33,8 @@ t_graph *fill_in_adj_matrix_from_fd(int fd)
 	tmp = ft_atoi_backsp(tmp, (&G->e), &n);
 	free(line);
 
-	ft_printf("v = %d\n", G->v);
-	ft_printf("e = %d\n", G->e);
+	ft_printf("G->v = %d\n", G->v);
+	ft_printf("G->e = %d\n", G->e);
 
 //create adjacency matrix and initi with zeros
 	G->adj = (int **)malloc(sizeof(int *) * G->v);
@@ -44,6 +44,8 @@ t_graph *fill_in_adj_matrix_from_fd(int fd)
 		G->adj[i] = (int *)malloc(sizeof(int) * G->v);
 		i++;
 	}
+//initialize
+	i = 0;
 	while (i < G->v)
 	{
 		j = 0;
@@ -57,28 +59,26 @@ t_graph *fill_in_adj_matrix_from_fd(int fd)
 //read next "e" lines and assign the edges
 	i = 0;
 
-	get_next_line(fd, &line);
-	ft_printf("%s\n", line);
-	tmp = line;
-	tmp = ft_atoi_backsp(tmp, &u, &n);
-	tmp = ft_atoi_backsp(tmp, &v, &n);
-	ft_printf("%d\n", u);
-	ft_printf("%d\n", v);
-	G->adj[u][v] = 1;
-	G->adj[v][u] = 1;
-	free(line);
-
+	// get_next_line(fd, &line);
+	// ft_printf("%s\n", line);
+	// tmp = line;
+	// tmp = ft_atoi_backsp(tmp, &u, &n);
+	// tmp = ft_atoi_backsp(tmp, &v, &n);
+	// ft_printf("%d\n", u);
+	// ft_printf("%d\n", v);
+	// G->adj[u][v] = 1;
+	// G->adj[v][u] = 1;
+	// free(line);
 	while (i < G->e)
 	{
 		get_next_line(fd, &line);
-		ft_printf("%s\n", line);
+		// ft_printf("%s\n", line);
 		tmp = line;
-		// tmp = ft_atoi_backsp(tmp, &u, &n);
-		// tmp = ft_atoi_backsp(tmp, &v, &n);
-	
-		// G->adj[u][v] = 1;
-		// G->adj[v][u] = 1;
-		// free(line);
+		tmp = ft_atoi_backsp(tmp, &u, &n);
+		tmp = ft_atoi_backsp(tmp, &v, &n);
+		G->adj[u][v] = 1;
+		G->adj[v][u] = 1;
+		free(line);
 		i++;
 	}
 	return (G);
@@ -92,10 +92,32 @@ void	print_adjacency_matrix(t_graph *G)
 	i = 0;
 	while (i < G->v)
 	{
+		ft_printf("%3d :", i);
 		j = 0;
 		while (j < G->v)
 		{
 			ft_printf("%3d ", G->adj[i][j]);
+			j++;
+		}
+		ft_printf("\n");
+		i++;
+	}
+}
+
+void	print_neighbours(t_graph *G)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < G->v)
+	{
+		j = 0;
+		ft_printf("%4d :", i);
+		while (j < G->v)
+		{
+			if (G->adj[i][j])
+				ft_printf("%3d ", j);
 			j++;
 		}
 		ft_printf("\n");
@@ -114,8 +136,8 @@ int main(int argc, char **argv)
 	if ((fd = open(argv[1], O_RDONLY)) < 1)
 		return (0);
 	new_G = fill_in_adj_matrix_from_fd(fd);
-	// print_adjacency_matrix(new_G);
-
+	print_adjacency_matrix(new_G);
+	print_neighbours(new_G);
 
 	i = 0;
 	while (i < new_G->v)
